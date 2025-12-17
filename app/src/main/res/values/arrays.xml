@@ -1,0 +1,15 @@
+<resources>
+    <string-array name="lyric_source_titles">
+        <item>Auto</item>
+        <item>NetEase</item>
+        <item>QQ Music</item>
+        <item>Kugou</item>
+    </string-array>
+
+    <string-array name="lyric_source_descriptions">
+        <item>Smart match best source</item>
+        <item>Large library, fast updates</item>
+        <item>Stable copyright</item>
+        <item>Better translated lyrics</item>
+    </string-array>
+</resources>

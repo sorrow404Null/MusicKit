@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">MusicKit</string>
+    <string name="text_app_description">Easily convert NCM to FLAC and tag the music</string>
+    <string name="text_author">Author</string>
+    <string name="text_sorrow_404_null">sorrow404Null</string>
+    <string name="text_github">Github</string>
+    <string name="text_github_description">View source code</string>
+
+    <string name="text_settings_title">Settings</string>
+    <string name="text_section_storage">Storage</string>
+    <string name="text_section_lyrics">Lyrics</string>
+    <string name="text_section_advanced">Advanced</string>
+    <string name="text_output_path">Output path</string>
+    <string name="text_input_path">Input path</string>
+    <string name="text_lyric_source">Lyric source</string>
+    <string name="text_choose_lyric_source">Choose lyric source</string>
+    <string name="text_not_set">Not set</string>
+
+    <string name="text_delete_source">Delete source file</string>
+    <string name="text_delete_source_desc">
+        Original file will be removed after download
+    </string>
+
 </resources>
