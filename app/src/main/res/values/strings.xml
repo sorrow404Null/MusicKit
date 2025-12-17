@@ -18,7 +18,7 @@
 
     <string name="text_delete_source">Delete source file</string>
     <string name="text_delete_source_desc">
-        Original file will be removed after download
+        Original file will be removed after convert
     </string>
 
 </resources>
