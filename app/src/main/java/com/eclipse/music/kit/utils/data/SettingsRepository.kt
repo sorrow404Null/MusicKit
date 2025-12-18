@@ -6,8 +6,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 
 class SettingsRepository(context: Context) {
-    val Context.settingsDataStore by preferencesDataStore(name = "settings")
-
     private val ds = context.settingsDataStore
 
     suspend fun load(): SettingsState {
