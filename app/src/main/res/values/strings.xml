@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">MusicKit</string>
-    <string name="text_app_description">Easily convert NCM to FLAC and tag the music</string>
+    <string name="text_app_description">
+        Easily convert NCM to FLAC and tag the music
+    </string>
+
     <string name="text_author">Author</string>
     <string name="text_sorrow_404_null">sorrow404Null</string>
     <string name="text_github">Github</string>
@@ -10,8 +13,10 @@
     <string name="text_section_storage">Storage</string>
     <string name="text_section_lyrics">Lyrics</string>
     <string name="text_section_advanced">Advanced</string>
+
     <string name="text_output_path">Output path</string>
     <string name="text_input_path">Input path</string>
+
     <string name="text_lyric_source">Lyric source</string>
     <string name="text_choose_lyric_source">Choose lyric source</string>
     <string name="text_not_set">Not set</string>
@@ -20,5 +25,17 @@
     <string name="text_delete_source_desc">
         Original file will be removed after convert
     </string>
+
+    <string name="text_pending_files">Files to Convert</string>
+    <string name="text_action_start_convert">Start Conversion</string>
+
+    <string name="text_scanning">Scanning files…</string>
+    <string name="text_no_files">No NCM files found in this directory</string>
+
+    <string name="text_toast_choose_input_dir">Please select an input directory first</string>
+    <string name="text_toast_choose_output_dir">Please select an output directory first</string>
+    <string name="text_toast_no_ncm_files">No NCM files found</string>
+
+    <string name="text_ncm_file">NCM File</string>
 
 </resources>

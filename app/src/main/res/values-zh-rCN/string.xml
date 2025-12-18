@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">MusicKit</string>
+
+    <string name="text_app_description">
+        轻松将 NCM 转换为 FLAC 并自动写入音乐标签
+    </string>
+
+    <string name="text_author">作者</string>
+    <string name="text_sorrow_404_null">sorrow404Null</string>
+
+    <string name="text_github">GitHub</string>
+    <string name="text_github_description">查看源代码</string>
+
+    <string name="text_settings_title">设置</string>
+
+    <string name="text_section_storage">存储</string>
+    <string name="text_section_lyrics">歌词</string>
+    <string name="text_section_advanced">高级</string>
+
+    <string name="text_output_path">输出目录</string>
+    <string name="text_input_path">输入目录</string>
+
+    <string name="text_lyric_source">歌词来源</string>
+    <string name="text_choose_lyric_source">选择歌词来源</string>
+    <string name="text_not_set">未设置</string>
+
+    <string name="text_delete_source">删除源文件</string>
+    <string name="text_delete_source_desc">
+        转换完成后将删除原始文件
+    </string>
+
+    <string name="text_pending_files">待转换文件</string>
+    <string name="text_action_start_convert">开始转换</string>
+
+    <string name="text_scanning">正在扫描文件…</string>
+    <string name="text_no_files">当前目录下未找到 NCM 文件</string>
+
+    <string name="text_toast_choose_input_dir">请先选择输入目录</string>
+    <string name="text_toast_choose_output_dir">请先选择输出目录</string>
+    <string name="text_toast_no_ncm_files">未发现 NCM 文件</string>
+
+    <string name="text_ncm_file">NCM 文件</string>
+
+</resources>
