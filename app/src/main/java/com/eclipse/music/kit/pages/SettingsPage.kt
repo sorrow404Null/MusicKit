@@ -37,6 +37,7 @@ import com.eclipse.music.kit.components.NavigationItem
 import com.eclipse.music.kit.components.SwitchItem
 import com.eclipse.music.kit.components.ValueItem
 import com.eclipse.music.kit.components.rememberSettingsState
+import com.eclipse.music.kit.navigation.Routes
 import com.eclipse.music.kit.utils.data.SettingsState
 import com.eclipse.music.kit.utils.storage.StorageActions
 
@@ -55,7 +56,13 @@ fun SettingsPage(navController: NavHostController) {
             CenterAlignedTopAppBar(
                 title = { Text(stringResource(R.string.text_settings_title)) },
                 navigationIcon = {
-                    IconButton(onClick = navController::popBackStack) {
+                    IconButton(onClick = {
+                        navController.navigate(Routes.HOME) {
+                            popUpTo(Routes.SETTINGS) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }) {
                         Icon(Icons.Outlined.ArrowBackIosNew, null)
                     }
                 }
