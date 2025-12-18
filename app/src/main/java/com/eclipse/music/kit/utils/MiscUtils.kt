@@ -2,6 +2,7 @@ package com.eclipse.music.kit.utils
 
 import android.content.Intent
 import androidx.core.net.toUri
+import androidx.documentfile.provider.DocumentFile
 import com.eclipse.music.kit.utils.AndroidAppContext.applicationContext
 
 object MiscUtils {
@@ -11,4 +12,11 @@ object MiscUtils {
         }
         applicationContext?.startActivity(intent)
     }
+
+    fun DocumentFile.safeDisplayName(): String = name
+        ?.removeSuffix(".ncm")
+        ?.let { if (it.length > 40) it.take(35) + "..." else it }
+        ?: "Unknown"
+
+
 }
