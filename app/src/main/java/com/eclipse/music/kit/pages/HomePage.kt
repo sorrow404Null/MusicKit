@@ -47,6 +47,7 @@ import com.eclipse.music.kit.components.DetailsBottomSheet
 import com.eclipse.music.kit.components.NcmSongItem
 import com.eclipse.music.kit.components.rememberSettingsState
 import com.eclipse.music.kit.navigation.Routes
+import com.eclipse.music.kit.utils.AndroidAppContext.applicationContext
 import com.eclipse.music.kit.utils.MiscUtils.safeDisplayName
 import com.eclipse.music.kit.utils.ncm.NcmUiFile
 import com.eclipse.music.kit.utils.ncm.ScanState
@@ -121,8 +122,6 @@ fun HomePage(navController: NavHostController) {
 
             val files = (scanState as? ScanState.Done)?.files.orEmpty()
 
-            /* ===== 统计卡片 ===== */
-
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -152,13 +151,13 @@ fun HomePage(navController: NavHostController) {
                         onClick = {
                             when {
                                 state.inputDir.isEmpty() ->
-                                    toast(context.getString(R.string.text_toast_choose_input_dir))
+                                    toast(applicationContext!!.getString(R.string.text_toast_choose_input_dir))
 
                                 state.outputDir.isEmpty() ->
-                                    toast(context.getString(R.string.text_toast_choose_output_dir))
+                                    toast(applicationContext!!.getString(R.string.text_toast_choose_output_dir))
 
                                 files.isEmpty() ->
-                                    toast(context.getString(R.string.text_toast_no_ncm_files))
+                                    toast(applicationContext!!.getString(R.string.text_toast_no_ncm_files))
 
                                 else ->
                                     showProgress = true
@@ -169,8 +168,6 @@ fun HomePage(navController: NavHostController) {
                     }
                 }
             }
-
-            /* ===== 文件列表 ===== */
 
             Surface(
                 modifier = Modifier
