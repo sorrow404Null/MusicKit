@@ -1,10 +1,10 @@
 package com.eclipse.music.kit.pages
 
 import android.annotation.RequiresApi
+import android.app.Application
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -30,8 +30,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.eclipse.music.kit.R
 import com.eclipse.music.kit.components.ConvertProgressDialog
@@ -47,61 +48,65 @@ import com.eclipse.music.kit.components.DetailsBottomSheet
 import com.eclipse.music.kit.components.NcmSongItem
 import com.eclipse.music.kit.components.rememberSettingsState
 import com.eclipse.music.kit.navigation.Routes
-import com.eclipse.music.kit.utils.AndroidAppContext.applicationContext
-import com.eclipse.music.kit.utils.MiscUtils.safeDisplayName
-import com.eclipse.music.kit.utils.ncm.NcmUiFile
 import com.eclipse.music.kit.utils.ncm.ScanState
-import kotlinx.coroutines.delay
+import com.eclipse.music.kit.viewModel.home.HomeViewModel
+import com.eclipse.music.kit.viewModel.home.HomeViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.R)
 @Suppress("AssignedValueIsNeverRead")
 @Composable
-fun HomePage(navController: NavHostController) {
+fun HomePage(
+    navController: NavHostController,
+) {
 
     val context = LocalContext.current
-    fun toast(msg: String) =
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+    val application = remember {
+        context.applicationContext as Application
+    }
+
+    val viewModel: HomeViewModel = viewModel(
+        factory = HomeViewModelFactory(application)
+    )
+
+    val scanState by viewModel.scanState.collectAsState()
+    val currentIndex by viewModel.currentIndex.collectAsState()
 
     var showDetails by remember { mutableStateOf(false) }
     var showProgress by remember { mutableStateOf(false) }
-    var currentIndex by remember { mutableIntStateOf(-1) }
-    var refreshKey by remember { mutableIntStateOf(0) }
 
     val (settingsState, ncmFiles, _) = rememberSettingsState()
-    val state = settingsState.value
+    val settings = settingsState.value
 
-    var scanState by remember { mutableStateOf<ScanState>(ScanState.Scanning) }
+    val chooseInputDirText = stringResource(R.string.text_toast_choose_input_dir)
+    val chooseOutputDirText = stringResource(R.string.text_toast_choose_output_dir)
+    val noNcmFilesText = stringResource(R.string.text_toast_no_ncm_files)
 
-    LaunchedEffect(ncmFiles, refreshKey) {
-        scanState = ScanState.Scanning
-        delay(300)
-
-        val files = ncmFiles
-            .filter { it.exists() }
-            .map {
-                NcmUiFile(
-                    file = it,
-                    displayName = it.safeDisplayName()
-                )
-            }
-            .sortedBy { it.displayName.lowercase() }
-
-        scanState = ScanState.Done(files)
+    fun toast(msg: String) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
+    LaunchedEffect(ncmFiles) {
+        viewModel.refresh(ncmFiles)
+        viewModel.scan(ncmFiles)
+    }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
+                    IconButton(onClick = {
+                        navController.navigate(Routes.SETTINGS)
+                    }) {
                         Icon(Icons.Outlined.Settings, null)
                     }
                 },
                 actions = {
-                    IconButton(onClick = { refreshKey++ }) {
+                    IconButton(onClick = {
+                        viewModel.refresh(ncmFiles)
+                        viewModel.scan(ncmFiles)
+                    }) {
                         Icon(Icons.Outlined.Refresh, null)
                     }
 
@@ -133,7 +138,7 @@ fun HomePage(navController: NavHostController) {
                 ) {
 
                     Text(
-                        stringResource(R.string.text_pending_files),
+                        text = stringResource(R.string.text_pending_files),
                         style = MaterialTheme.typography.labelMedium
                     )
 
@@ -150,14 +155,14 @@ fun HomePage(navController: NavHostController) {
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             when {
-                                state.inputDir.isEmpty() ->
-                                    toast(applicationContext!!.getString(R.string.text_toast_choose_input_dir))
+                                settings.inputDir.isEmpty() ->
+                                    toast(chooseInputDirText)
 
-                                state.outputDir.isEmpty() ->
-                                    toast(applicationContext!!.getString(R.string.text_toast_choose_output_dir))
+                                settings.outputDir.isEmpty() ->
+                                    toast(chooseOutputDirText)
 
                                 files.isEmpty() ->
-                                    toast(applicationContext!!.getString(R.string.text_toast_no_ncm_files))
+                                    toast(noNcmFilesText)
 
                                 else ->
                                     showProgress = true
@@ -191,24 +196,16 @@ fun HomePage(navController: NavHostController) {
                     }
 
                     is ScanState.Done -> {
-                        if (stateScan.files.isEmpty()) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(stringResource(R.string.text_no_files))
-                            }
-                        } else {
-                            LazyColumn {
-                                items(
-                                    items = stateScan.files,
-                                    key = { it.file.uri }
-                                ) { item ->
-                                    NcmSongItem(
-                                        name = item.displayName,
-                                        isCurrent = stateScan.files.indexOf(item) == currentIndex
-                                    )
-                                }
+                        LazyColumn {
+                            itemsIndexed(
+                                items = stateScan.files,
+                                key = { _, item -> item.file.uri }
+                            ) { index, item ->
+                                NcmSongItem(
+                                    name = item.displayName,
+                                    cover = item.cover,
+                                    isCurrent = index == currentIndex
+                                )
                             }
                         }
                     }
@@ -224,9 +221,9 @@ fun HomePage(navController: NavHostController) {
     if (showProgress) {
         ConvertProgressDialog(
             total = (scanState as? ScanState.Done)?.files?.size ?: 0,
-            onProgress = { currentIndex = it },
+            onProgress = viewModel::setCurrentIndex,
             onFinish = {
-                currentIndex = -1
+                viewModel.setCurrentIndex(-1)
                 showProgress = false
             }
         )
