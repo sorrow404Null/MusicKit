@@ -39,6 +39,6 @@
     <string name="text_toast_choose_output_dir">请先选择输出目录</string>
     <string name="text_toast_no_ncm_files">未发现 NCM 文件</string>
 
-    <string name="text_ncm_file">NCM 文件</string>
+    <string name="text_extension_format">格式</string>
 
 </resources>

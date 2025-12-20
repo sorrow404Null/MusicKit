@@ -202,7 +202,7 @@ fun HomePage(
                                 key = { _, item -> item.file.uri }
                             ) { index, item ->
                                 NcmSongItem(
-                                    name = item.displayName,
+                                    file = item.file,
                                     cover = item.cover,
                                     isCurrent = index == currentIndex
                                 )

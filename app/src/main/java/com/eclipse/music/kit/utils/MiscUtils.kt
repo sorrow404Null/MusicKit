@@ -18,5 +18,8 @@ object MiscUtils {
         ?.let { if (it.length > 40) it.take(35) + "..." else it }
         ?: "Unknown"
 
+    fun DocumentFile.extensionOrUnknown(): String =
+        name?.substringAfterLast('.', "UNKNOWN")?.uppercase() ?: "UNKNOWN"
+
 
 }

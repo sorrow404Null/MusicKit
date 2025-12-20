@@ -36,6 +36,7 @@
     <string name="text_toast_choose_output_dir">Please select an output directory first</string>
     <string name="text_toast_no_ncm_files">No NCM files found</string>
 
-    <string name="text_ncm_file">NCM File</string>
+    <string name="text_extension_format">Format</string>
+
 
 </resources>
