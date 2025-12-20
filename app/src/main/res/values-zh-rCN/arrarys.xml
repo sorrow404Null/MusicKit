@@ -1,0 +1,15 @@
+<resources>
+    <string-array name="lyric_source_titles">
+        <item>自动</item>
+        <item>网易</item>
+        <item>QQ 音乐</item>
+        <item>酷狗</item>
+    </string-array>
+
+    <string-array name="lyric_source_descriptions">
+        <item>智能匹配最佳来源</item>
+        <item>曲库庞大，更新快速</item>
+        <item>版权稳定</item>
+        <item>翻译歌词更佳</item>
+    </string-array>
+</resources>
