@@ -6,5 +6,6 @@ data class SettingsState(
     val outputDir: String = "",
     val outputDirName: String = "",
     val deleteSource: Boolean = false,
-    val lyricSourceIndex: Int = 0
+    val lyricSourceIndex: Int = 0,
+    val hapticFeedbackEnabled: Boolean = false
 )
