@@ -13,6 +13,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.LibraryMusic
+import androidx.compose.material.icons.outlined.Vibration
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,14 +33,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.eclipse.music.kit.R
+import com.eclipse.music.kit.components.HapticLevel
 import com.eclipse.music.kit.components.LyricSourceSheet
 import com.eclipse.music.kit.components.NavigationItem
 import com.eclipse.music.kit.components.SwitchItem
 import com.eclipse.music.kit.components.ValueItem
+import com.eclipse.music.kit.components.rememberHaptic
 import com.eclipse.music.kit.components.rememberSettingsState
 import com.eclipse.music.kit.navigation.Routes
 import com.eclipse.music.kit.utils.data.SettingsState
 import com.eclipse.music.kit.utils.storage.StorageActions
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.R)
@@ -48,8 +52,14 @@ fun SettingsPage(navController: NavHostController) {
 
     var showLyricSheet by remember { mutableStateOf(false) }
     val lyricTitles = stringArrayResource(R.array.lyric_source_titles)
+
     val (settingsState, _, storageActions) = rememberSettingsState()
     val state = settingsState.value
+
+    val haptic = rememberHaptic(state)
+    val performHapticClick: () -> Unit = {
+        haptic(HapticLevel.LIGHT)
+    }
 
     Scaffold(
         topBar = {
@@ -57,6 +67,7 @@ fun SettingsPage(navController: NavHostController) {
                 title = { Text(stringResource(R.string.text_settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = {
+                        performHapticClick()
                         navController.navigate(Routes.HOME) {
                             popUpTo(Routes.SETTINGS) { saveState = true }
                             launchSingleTop = true
@@ -78,22 +89,30 @@ fun SettingsPage(navController: NavHostController) {
         ) {
 
             StorageSettingUI(
-                state = settingsState.value,
-                actions = storageActions
+                state = state,
+                actions = storageActions,
+                onHaptic = {
+                    haptic(HapticLevel.LIGHT)
+                }
             )
 
             SettingSection(title = stringResource(R.string.text_section_lyrics)) {
+
                 ValueItem(
                     icon = Icons.Outlined.LibraryMusic,
                     title = stringResource(R.string.text_lyric_source),
                     value = lyricTitles[state.lyricSourceIndex],
-                    onClick = { showLyricSheet = true }
+                    onClick = {
+                        performHapticClick()
+                        showLyricSheet = true
+                    }
                 )
 
                 if (showLyricSheet) {
                     LyricSourceSheet(
                         currentIndex = state.lyricSourceIndex,
                         onSelect = {
+                            performHapticClick()
                             settingsState.value =
                                 state.copy(lyricSourceIndex = it)
                             showLyricSheet = false
@@ -101,10 +120,22 @@ fun SettingsPage(navController: NavHostController) {
                         onDismiss = { showLyricSheet = false }
                     )
                 }
-
             }
 
             SettingSection(title = stringResource(R.string.text_section_advanced)) {
+
+                SwitchItem(
+                    icon = Icons.Outlined.Vibration,
+                    title = stringResource(R.string.text_haptic_feedback),
+                    subtitle = stringResource(R.string.text_haptic_feedback_desc),
+                    checked = state.hapticFeedbackEnabled,
+                    onCheckedChange = {
+                        performHapticClick()
+                        settingsState.value =
+                            state.copy(hapticFeedbackEnabled = it)
+                    }
+                )
+
                 SwitchItem(
                     icon = Icons.Outlined.Delete,
                     title = stringResource(R.string.text_delete_source),
@@ -112,15 +143,16 @@ fun SettingsPage(navController: NavHostController) {
                     checked = state.deleteSource,
                     isDanger = true,
                     onCheckedChange = {
+                        performHapticClick()
                         settingsState.value =
                             state.copy(deleteSource = it)
                     }
                 )
             }
         }
+
     }
 }
-
 
 @Composable
 private fun SettingSection(
@@ -145,18 +177,23 @@ private fun SettingSection(
 }
 
 @Composable
-fun StorageSettingUI(
+private fun StorageSettingUI(
     state: SettingsState,
-    actions: StorageActions
+    actions: StorageActions,
+    onHaptic: () -> Unit
 ) {
     SettingSection(title = stringResource(R.string.text_section_storage)) {
+
         NavigationItem(
             icon = Icons.Outlined.FolderOpen,
             title = stringResource(R.string.text_input_path),
             subtitle = state.inputDirName.ifEmpty {
                 stringResource(R.string.text_not_set)
             },
-            onClick = actions.selectInput
+            onClick = {
+                onHaptic()
+                actions.selectInput()
+            }
         )
 
         NavigationItem(
@@ -165,7 +202,10 @@ fun StorageSettingUI(
             subtitle = state.outputDirName.ifEmpty {
                 stringResource(R.string.text_not_set)
             },
-            onClick = actions.selectOutput
+            onClick = {
+                onHaptic()
+                actions.selectOutput()
+            }
         )
     }
 }

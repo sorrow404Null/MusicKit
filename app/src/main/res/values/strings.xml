@@ -38,5 +38,25 @@
 
     <string name="text_extension_format">Format</string>
 
+    <string name="text_converting">Converting</string>
+    <string name="text_done">Done</string>
+    <string name="text_convert_progress">%1$d / %2$d</string>
+
+    <string name="text_selected_count">
+        Selected %1$d / %2$d
+    </string>
+
+    <string name="text_select_all">Select all</string>
+    <string name="text_unselect_all">Unselect all</string>
+    <string name="text_clear_selection">Clear</string>
+
+    <string name="text_start_convert_with_count">
+        Start conversion (%1$d)
+    </string>
+
+    <string name="text_haptic_feedback">Haptic feedback</string>
+    <string name="text_haptic_feedback_desc">
+    Vibrate slightly when interacting with the app
+    </string>
 
 </resources>

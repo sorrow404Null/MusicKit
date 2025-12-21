@@ -41,4 +41,26 @@
 
     <string name="text_extension_format">格式</string>
 
+    <string name="text_converting">正在转换</string>
+    <string name="text_done">完成</string>
+    <string name="text_convert_progress">%1$d / %2$d</string>
+
+    <string name="text_selected_count">
+        已选 %1$d / 共 %2$d 首
+    </string>
+
+    <string name="text_select_all">全选</string>
+    <string name="text_unselect_all">取消全选</string>
+    <string name="text_clear_selection">清空</string>
+
+    <string name="text_start_convert_with_count">
+        开始转换（%1$d）
+    </string>
+
+    <string name="text_haptic_feedback">触摸反馈</string>
+    <string name="text_haptic_feedback_desc">
+    交互时提供轻微震动反馈
+    </string>
+
+
 </resources>
