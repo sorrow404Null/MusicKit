@@ -18,10 +18,11 @@ fun rememberHaptic(
 ): (HapticLevel) -> Unit {
 
     val haptic = LocalHapticFeedback.current
+    val enabled = settings.hapticFeedbackEnabled
 
-    return remember(settings.hapticFeedbackEnabled) {
+    return remember(enabled) {
         { level ->
-            if (!settings.hapticFeedbackEnabled) return@remember
+            if (!enabled) return@remember
 
             val type = when (level) {
                 HapticLevel.LIGHT ->

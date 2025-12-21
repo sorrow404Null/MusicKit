@@ -2,7 +2,6 @@ package com.eclipse.music.kit.utils.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 
 class SettingsRepository(context: Context) {
@@ -16,7 +15,8 @@ class SettingsRepository(context: Context) {
             outputDir = p[SettingsKeys.OUTPUT_DIR] ?: "",
             outputDirName = p[SettingsKeys.OUTPUT_DIR_NAME] ?: "",
             deleteSource = p[SettingsKeys.DELETE_SOURCE] ?: false,
-            lyricSourceIndex = p[SettingsKeys.LYRIC_SOURCE_INDEX] ?: 0
+            lyricSourceIndex = p[SettingsKeys.LYRIC_SOURCE_INDEX] ?: 0,
+            hapticFeedbackEnabled = p[SettingsKeys.HAPTIC_ENABLED] ?: false
         )
     }
 
@@ -28,6 +28,7 @@ class SettingsRepository(context: Context) {
             it[SettingsKeys.OUTPUT_DIR_NAME] = state.outputDirName
             it[SettingsKeys.DELETE_SOURCE] = state.deleteSource
             it[SettingsKeys.LYRIC_SOURCE_INDEX] = state.lyricSourceIndex
+            it[SettingsKeys.HAPTIC_ENABLED] = state.hapticFeedbackEnabled
         }
     }
 }

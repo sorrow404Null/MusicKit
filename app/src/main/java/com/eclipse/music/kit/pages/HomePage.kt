@@ -38,9 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,7 +46,9 @@ import androidx.navigation.NavHostController
 import com.eclipse.music.kit.R
 import com.eclipse.music.kit.components.ConvertProgressDialog
 import com.eclipse.music.kit.components.DetailsBottomSheet
+import com.eclipse.music.kit.components.HapticLevel
 import com.eclipse.music.kit.components.NcmSongItem
+import com.eclipse.music.kit.components.rememberHaptic
 import com.eclipse.music.kit.components.rememberSettingsState
 import com.eclipse.music.kit.navigation.Routes
 import com.eclipse.music.kit.utils.ncm.ScanState
@@ -57,13 +57,13 @@ import com.eclipse.music.kit.viewModel.home.HomeViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.R)
+@Suppress("AssignedValueIsNeverRead")
 @Composable
 fun HomePage(
     navController: NavHostController,
 ) {
 
     val context = LocalContext.current
-    val haptic = LocalHapticFeedback.current
 
     val application = remember {
         context.applicationContext as Application
@@ -83,8 +83,12 @@ fun HomePage(
     val (settingsState, ncmFiles, _) = rememberSettingsState()
     val settings = settingsState.value
 
-    val chooseInputDirText = stringResource(R.string.text_toast_choose_input_dir)
-    val chooseOutputDirText = stringResource(R.string.text_toast_choose_output_dir)
+    val haptic = rememberHaptic(settings)
+
+    val chooseInputDirText =
+        stringResource(R.string.text_toast_choose_input_dir)
+    val chooseOutputDirText =
+        stringResource(R.string.text_toast_choose_output_dir)
 
     fun toast(msg: String) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
@@ -101,6 +105,7 @@ fun HomePage(
                 title = { Text(stringResource(R.string.app_name)) },
                 navigationIcon = {
                     IconButton(onClick = {
+                        haptic(HapticLevel.LIGHT)
                         navController.navigate(Routes.SETTINGS)
                     }) {
                         Icon(Icons.Outlined.Settings, null)
@@ -108,13 +113,17 @@ fun HomePage(
                 },
                 actions = {
                     IconButton(onClick = {
+                        haptic(HapticLevel.LIGHT)
                         viewModel.refresh(ncmFiles)
                         viewModel.scan(ncmFiles)
                     }) {
                         Icon(Icons.Outlined.Refresh, null)
                     }
 
-                    IconButton(onClick = { showDetails = true }) {
+                    IconButton(onClick = {
+                        haptic(HapticLevel.LIGHT)
+                        showDetails = true
+                    }) {
                         Icon(Icons.Outlined.Info, null)
                     }
                 }
@@ -133,7 +142,6 @@ fun HomePage(
             val totalCount = files.size
             val selectedCount = selectedUris.size
 
-            // ===== Pending / Selection Card =====
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -150,20 +158,31 @@ fun HomePage(
                     )
 
                     Text(
-                        text = "已选 $selectedCount / 共 $totalCount 首",
+                        text = stringResource(
+                            R.string.text_selected_count,
+                            selectedCount,
+                            totalCount
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
                     if (totalCount > 0) {
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Button(
+                                modifier = Modifier.weight(1f),
+                                onClick = {
+                                    haptic(HapticLevel.LIGHT)
+                                    viewModel.clearSelection()
+                                }
+                            ) {
+                                Text(stringResource(R.string.text_clear_selection))
+                            }
 
                             Button(
                                 modifier = Modifier.weight(1f),
                                 onClick = {
-                                    haptic.performHapticFeedback(
-                                        HapticFeedbackType.LongPress
-                                    )
+                                    haptic(HapticLevel.MEDIUM)
                                     if (selectedCount == totalCount) {
                                         viewModel.clearSelection()
                                     } else {
@@ -173,22 +192,10 @@ fun HomePage(
                             ) {
                                 Text(
                                     if (selectedCount == totalCount)
-                                        "取消全选"
+                                        stringResource(R.string.text_unselect_all)
                                     else
-                                        "全选"
+                                        stringResource(R.string.text_select_all)
                                 )
-                            }
-
-                            Button(
-                                modifier = Modifier.weight(1f),
-                                onClick = {
-                                    haptic.performHapticFeedback(
-                                        HapticFeedbackType.TextHandleMove
-                                    )
-                                    viewModel.clearSelection()
-                                }
-                            ) {
-                                Text("清空")
                             }
                         }
                     }
@@ -205,20 +212,22 @@ fun HomePage(
                                     toast(chooseOutputDirText)
 
                                 else -> {
-                                    haptic.performHapticFeedback(
-                                        HapticFeedbackType.LongPress
-                                    )
+                                    haptic(HapticLevel.MEDIUM)
                                     showProgress = true
                                 }
                             }
                         }
                     ) {
-                        Text("开始转换（$selectedCount）")
+                        Text(
+                            stringResource(
+                                R.string.text_start_convert_with_count,
+                                selectedCount
+                            )
+                        )
                     }
                 }
             }
 
-            // ===== Song List =====
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -248,7 +257,8 @@ fun HomePage(
                             ) { index, item ->
 
                                 val uri = item.file.uri.toString()
-                                val isSelected = selectedUris.contains(uri)
+                                val isSelected =
+                                    selectedUris.contains(uri)
 
                                 NcmSongItem(
                                     file = item.file,
@@ -256,10 +266,10 @@ fun HomePage(
                                     isCurrent = index == currentIndex,
                                     isSelected = isSelected,
                                     onClick = {
-                                        if (!isSelected && selectedUris.isEmpty()) {
-                                            haptic.performHapticFeedback(
-                                                HapticFeedbackType.LongPress
-                                            )
+                                        if (!isSelected &&
+                                            selectedUris.isEmpty()
+                                        ) {
+                                            haptic(HapticLevel.MEDIUM)
                                         }
                                         viewModel.toggleSelect(item.file)
                                     }
@@ -282,7 +292,9 @@ fun HomePage(
             (scanState as? ScanState.Done)
                 ?.files
                 ?.filter {
-                    selectedUris.contains(it.file.uri.toString())
+                    selectedUris.contains(
+                        it.file.uri.toString()
+                    )
                 }
                 .orEmpty()
 

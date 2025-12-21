@@ -44,7 +44,6 @@ import com.eclipse.music.kit.navigation.Routes
 import com.eclipse.music.kit.utils.data.SettingsState
 import com.eclipse.music.kit.utils.storage.StorageActions
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
@@ -57,9 +56,6 @@ fun SettingsPage(navController: NavHostController) {
     val state = settingsState.value
 
     val haptic = rememberHaptic(state)
-    val performHapticClick: () -> Unit = {
-        haptic(HapticLevel.LIGHT)
-    }
 
     Scaffold(
         topBar = {
@@ -67,7 +63,7 @@ fun SettingsPage(navController: NavHostController) {
                 title = { Text(stringResource(R.string.text_settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = {
-                        performHapticClick()
+                        haptic(HapticLevel.LIGHT)
                         navController.navigate(Routes.HOME) {
                             popUpTo(Routes.SETTINGS) { saveState = true }
                             launchSingleTop = true
@@ -91,9 +87,7 @@ fun SettingsPage(navController: NavHostController) {
             StorageSettingUI(
                 state = state,
                 actions = storageActions,
-                onHaptic = {
-                    haptic(HapticLevel.LIGHT)
-                }
+                onHaptic = { haptic(HapticLevel.LIGHT) }
             )
 
             SettingSection(title = stringResource(R.string.text_section_lyrics)) {
@@ -103,7 +97,7 @@ fun SettingsPage(navController: NavHostController) {
                     title = stringResource(R.string.text_lyric_source),
                     value = lyricTitles[state.lyricSourceIndex],
                     onClick = {
-                        performHapticClick()
+                        haptic(HapticLevel.LIGHT)
                         showLyricSheet = true
                     }
                 )
@@ -112,7 +106,7 @@ fun SettingsPage(navController: NavHostController) {
                     LyricSourceSheet(
                         currentIndex = state.lyricSourceIndex,
                         onSelect = {
-                            performHapticClick()
+                            haptic(HapticLevel.LIGHT)
                             settingsState.value =
                                 state.copy(lyricSourceIndex = it)
                             showLyricSheet = false
@@ -130,7 +124,7 @@ fun SettingsPage(navController: NavHostController) {
                     subtitle = stringResource(R.string.text_haptic_feedback_desc),
                     checked = state.hapticFeedbackEnabled,
                     onCheckedChange = {
-                        performHapticClick()
+                        haptic(HapticLevel.LIGHT)
                         settingsState.value =
                             state.copy(hapticFeedbackEnabled = it)
                     }
@@ -143,14 +137,13 @@ fun SettingsPage(navController: NavHostController) {
                     checked = state.deleteSource,
                     isDanger = true,
                     onCheckedChange = {
-                        performHapticClick()
+                        haptic(HapticLevel.LIGHT)
                         settingsState.value =
                             state.copy(deleteSource = it)
                     }
                 )
             }
         }
-
     }
 }
 
