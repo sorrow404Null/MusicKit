@@ -266,9 +266,7 @@ fun HomePage(
                                     isCurrent = index == currentIndex,
                                     isSelected = isSelected,
                                     onClick = {
-                                        if (!isSelected &&
-                                            selectedUris.isEmpty()
-                                        ) {
+                                        if (!isSelected) {
                                             haptic(HapticLevel.MEDIUM)
                                         }
                                         viewModel.toggleSelect(item.file)
