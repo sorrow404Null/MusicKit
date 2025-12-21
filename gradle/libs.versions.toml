@@ -10,6 +10,8 @@ composeBom = "2025.12.01"
 navigationCompose = "2.9.6"
 material3 = "1.4.0"
 documentfile = "1.1.0"
+rendering = "1.17.1"
+composeMaterial = "1.5.6"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -26,6 +28,8 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+rendering = { group = "com.google.ar.sceneform", name = "rendering", version.ref = "rendering" }
+androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
