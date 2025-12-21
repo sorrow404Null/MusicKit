@@ -3,7 +3,7 @@ package com.eclipse.music.kit.components
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,12 +13,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,34 +35,38 @@ import com.eclipse.music.kit.utils.MiscUtils.safeDisplayName
 fun NcmSongItem(
     file: DocumentFile,
     cover: Bitmap?,
-    isCurrent: Boolean
+    isCurrent: Boolean,
+    isSelected: Boolean,
+    onClick: () -> Unit
 ) {
-    val displayName = file.safeDisplayName()
-    val extension = file.extensionOrUnknown()
+    val background = when {
+        isCurrent ->
+            MaterialTheme.colorScheme.primaryContainer
+
+        isSelected ->
+            MaterialTheme.colorScheme.secondaryContainer
+
+        else ->
+            MaterialTheme.colorScheme.surface
+    }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                if (isCurrent) MaterialTheme.colorScheme.primaryContainer
-                else MaterialTheme.colorScheme.surface
-            )
+            .background(background)
+            .clickable { onClick() }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+
+
         if (cover != null) {
-            val imageBitmap = remember(cover) { cover.asImageBitmap() }
             Image(
-                bitmap = imageBitmap,
+                bitmap = cover.asImageBitmap(),
                 contentDescription = null,
                 modifier = Modifier
                     .size(48.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .border(
-                        0.5.dp,
-                        MaterialTheme.colorScheme.outlineVariant,
-                        RoundedCornerShape(8.dp)
-                    ),
+                    .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop
             )
         } else {
@@ -77,14 +81,26 @@ fun NcmSongItem(
 
         Column {
             Text(
-                text = displayName,
+                text = file.safeDisplayName(),
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                text = "$extension ${stringResource(R.string.text_extension_format)}",
+                text = "${file.extensionOrUnknown()} ${stringResource(R.string.text_extension_format)}",
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f) // 更低调的灰色
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        if (isSelected) {
+            Icon(
+                imageVector = Icons.Filled.CheckCircle,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp)
             )
         }
     }
 }
+
