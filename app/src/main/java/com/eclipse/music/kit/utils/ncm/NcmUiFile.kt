@@ -1,13 +1,10 @@
 package com.eclipse.music.kit.utils.ncm
 
-import android.graphics.Bitmap
 import androidx.documentfile.provider.DocumentFile
 
-class NcmUiFile(
+data class NcmUiFile(
     val file: DocumentFile,
-    val displayName: String,
-    val cover: Bitmap? = null
+    val displayName: String
 ) {
-    fun withCover(bitmap: Bitmap) =
-        NcmUiFile(file, displayName, bitmap)
+    val uriKey: String = file.uri.toString()
 }

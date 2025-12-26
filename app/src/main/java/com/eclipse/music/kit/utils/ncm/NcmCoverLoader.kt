@@ -15,17 +15,21 @@ object NcmCoverLoader {
     ): Bitmap? = withContext(Dispatchers.IO) {
 
         val key = file.uri.toString()
+        NcmCache.getCover(key)?.let { return@withContext it }
 
-        NcmCoverCache.get(key)?.let { return@withContext it }
+        val bytes =
+            NcmMetaReader.readCover(context, file.uri)
+                ?: return@withContext null
 
-        val bytes = NcmMetaReader.readCover(context, file.uri)
-            ?: return@withContext null
+        val opts = BitmapFactory.Options().apply {
+            inSampleSize = 4
+        }
 
-        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-            ?: return@withContext null
+        val bitmap =
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts)
+                ?: return@withContext null
 
-        NcmCoverCache.put(key, bitmap)
-
+        NcmCache.putCover(key, bitmap)
         bitmap
     }
 }

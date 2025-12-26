@@ -57,14 +57,12 @@ import com.eclipse.music.kit.viewModel.home.HomeViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.R)
-@Suppress("AssignedValueIsNeverRead")
 @Composable
 fun HomePage(
     navController: NavHostController,
 ) {
 
     val context = LocalContext.current
-
     val application = remember {
         context.applicationContext as Application
     }
@@ -76,6 +74,7 @@ fun HomePage(
     val scanState by viewModel.scanState.collectAsState()
     val currentIndex by viewModel.currentIndex.collectAsState()
     val selectedUris by viewModel.selectedUris.collectAsState()
+    val covers = viewModel.covers
 
     var showDetails by remember { mutableStateOf(false) }
     var showProgress by remember { mutableStateOf(false) }
@@ -94,9 +93,12 @@ fun HomePage(
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.loadCacheFirst()
+    }
+
     LaunchedEffect(ncmFiles) {
         viewModel.refresh(ncmFiles)
-        viewModel.scan(ncmFiles)
     }
 
     Scaffold(
@@ -115,7 +117,6 @@ fun HomePage(
                     IconButton(onClick = {
                         haptic(HapticLevel.LIGHT)
                         viewModel.refresh(ncmFiles)
-                        viewModel.scan(ncmFiles)
                     }) {
                         Icon(Icons.Outlined.Refresh, null)
                     }
@@ -138,7 +139,8 @@ fun HomePage(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            val files = (scanState as? ScanState.Done)?.files.orEmpty()
+            val files =
+                (scanState as? ScanState.Done)?.files.orEmpty()
             val totalCount = files.size
             val selectedCount = selectedUris.size
 
@@ -253,16 +255,16 @@ fun HomePage(
                         LazyColumn {
                             itemsIndexed(
                                 items = stateScan.files,
-                                key = { _, item -> item.file.uri }
+                                key = { _, item -> item.uriKey }
                             ) { index, item ->
 
-                                val uri = item.file.uri.toString()
+                                val uri = item.uriKey
                                 val isSelected =
                                     selectedUris.contains(uri)
 
                                 NcmSongItem(
                                     file = item.file,
-                                    cover = item.cover,
+                                    cover = covers[uri],
                                     isCurrent = index == currentIndex,
                                     isSelected = isSelected,
                                     onClick = {
@@ -290,9 +292,7 @@ fun HomePage(
             (scanState as? ScanState.Done)
                 ?.files
                 ?.filter {
-                    selectedUris.contains(
-                        it.file.uri.toString()
-                    )
+                    selectedUris.contains(it.uriKey)
                 }
                 .orEmpty()
 

@@ -2,10 +2,12 @@ package com.eclipse.music.kit.viewModel.home
 
 import android.content.Context
 import android.graphics.Bitmap
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eclipse.music.kit.utils.MiscUtils.safeDisplayName
+import com.eclipse.music.kit.utils.ncm.NcmCache
 import com.eclipse.music.kit.utils.ncm.NcmCoverLoader
 import com.eclipse.music.kit.utils.ncm.NcmUiFile
 import com.eclipse.music.kit.utils.ncm.ScanState
@@ -13,25 +15,42 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
 import java.text.Collator
 import java.util.Locale
 
 class HomeViewModel(
     private val appContext: Context
 ) : ViewModel() {
+
     private val _scanState =
         MutableStateFlow<ScanState>(ScanState.Scanning)
     val scanState: StateFlow<ScanState> = _scanState
+
     private var hasScannedOnce = false
+
     private val _currentIndex = MutableStateFlow(-1)
     val currentIndex: StateFlow<Int> = _currentIndex
-    private val collator: Collator =
-        Collator.getInstance(Locale.getDefault()).apply {
-            strength = Collator.PRIMARY
-        }
+
     private val _selectedUris =
         MutableStateFlow<Set<String>>(emptySet())
     val selectedUris: StateFlow<Set<String>> = _selectedUris
+
+    val covers = mutableStateMapOf<String, Bitmap>()
+
+    private val collator =
+        Collator.getInstance(Locale.getDefault()).apply {
+            strength = Collator.PRIMARY
+        }
+
+    private val coverSemaphore = Semaphore(3)
+
+    fun loadCacheFirst() {
+        val cached = NcmCache.loadScan(appContext)
+        if (cached.isNotEmpty()) {
+            _scanState.value = ScanState.Done(cached)
+        }
+    }
 
     fun scan(files: List<DocumentFile>, force: Boolean = false) {
         if (hasScannedOnce && !force) return
@@ -40,14 +59,15 @@ class HomeViewModel(
         viewModelScope.launch(Dispatchers.Default) {
             _scanState.value = ScanState.Scanning
             _selectedUris.value = emptySet()
+            covers.clear()
 
             val base = files
                 .asSequence()
                 .filter { it.exists() }
-                .map { file ->
+                .map {
                     NcmUiFile(
-                        file = file,
-                        displayName = file.safeDisplayName()
+                        file = it,
+                        displayName = it.safeDisplayName()
                     )
                 }
                 .sortedWith { a, b ->
@@ -56,26 +76,25 @@ class HomeViewModel(
                 .toList()
 
             _scanState.value = ScanState.Done(base)
+            NcmCache.saveScan(appContext, base)
 
-            base.forEachIndexed { index, item ->
+            base.forEach { item ->
                 launch(Dispatchers.IO) {
-                    val bitmap =
-                        NcmCoverLoader.loadBitmap(appContext, item.file)
-                            ?: return@launch
+                    coverSemaphore.acquire()
+                    runCatching {
+                        val bitmap =
+                            NcmCoverLoader.loadBitmap(
+                                appContext,
+                                item.file
+                            ) ?: return@launch
 
-                    updateCover(index, bitmap)
+                        covers[item.uriKey] = bitmap
+                    }.also {
+                        coverSemaphore.release()
+                    }
                 }
             }
         }
-    }
-
-    private fun updateCover(index: Int, bitmap: Bitmap) {
-        val current = _scanState.value as? ScanState.Done ?: return
-        if (index !in current.files.indices) return
-
-        val list = current.files.toMutableList()
-        list[index] = list[index].withCover(bitmap)
-        _scanState.value = ScanState.Done(list)
     }
 
     fun refresh(files: List<DocumentFile>) {
@@ -101,7 +120,7 @@ class HomeViewModel(
     fun selectAll() {
         val files = (_scanState.value as? ScanState.Done)?.files.orEmpty()
         _selectedUris.value =
-            files.map { it.file.uri.toString() }.toSet()
+            files.map { it.uriKey }.toSet()
     }
 
     fun selectedCount(): Int = _selectedUris.value.size
