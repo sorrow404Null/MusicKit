@@ -20,7 +20,10 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            isDebuggable = false
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -30,6 +33,18 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_19
         targetCompatibility = JavaVersion.VERSION_19
+    }
+
+    packaging {
+        resources {
+            excludes += setOf(
+                "META-INF/LICENSE*",
+                "META-INF/NOTICE*",
+                "META-INF/AL2.0",
+                "META-INF/LGPL2.1",
+                "META-INF/*.kotlin_module"
+            )
+        }
     }
 
     kotlin {
@@ -45,6 +60,7 @@ android {
     }
 }
 
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -54,12 +70,11 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.material.icons.extended)
-    implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.documentfile)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.coil.compose)
-    implementation(libs.rendering)
-    implementation(libs.androidx.compose.material)
+    implementation(libs.sceneform.rendering)
+    implementation(libs.accompanist.navigation.animation)
 }
