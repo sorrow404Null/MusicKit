@@ -17,6 +17,8 @@ import com.eclipse.music.kit.utils.data.SettingsRepository
 import com.eclipse.music.kit.utils.data.SettingsState
 import com.eclipse.music.kit.utils.storage.StorageActions
 import com.eclipse.music.kit.utils.storage.StorageController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 @RequiresApi(Build.VERSION_CODES.R)
@@ -65,7 +67,9 @@ fun rememberSettingsState():
 
     LaunchedEffect(state.value.inputDir) {
         if (state.value.inputDir.isNotEmpty()) {
-            ncmFiles = controller.scanNcm(state.value.inputDir)
+            ncmFiles = withContext(Dispatchers.IO) {
+                controller.scanNcm(state.value.inputDir)
+            }
         }
     }
 

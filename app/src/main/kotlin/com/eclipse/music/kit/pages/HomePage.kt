@@ -259,13 +259,13 @@ fun HomePage(
                                 key = { _, item -> item.uriKey }
                             ) { index, item ->
 
-                                val uri = item.uriKey
                                 val isSelected =
-                                    selectedUris.contains(uri)
+                                    selectedUris.contains(item.uriKey)
 
                                 NcmSongItem(
-                                    file = item.file,
-                                    cover = covers[uri],
+                                    displayName = item.displayName,
+                                    extension = item.extension,
+                                    cover = covers[item.uriKey],
                                     isCurrent = index == currentIndex,
                                     isSelected = isSelected,
                                     onClick = {

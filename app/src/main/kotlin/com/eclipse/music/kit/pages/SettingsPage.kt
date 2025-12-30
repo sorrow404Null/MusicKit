@@ -40,7 +40,6 @@ import com.eclipse.music.kit.components.SwitchItem
 import com.eclipse.music.kit.components.ValueItem
 import com.eclipse.music.kit.components.rememberHaptic
 import com.eclipse.music.kit.components.rememberSettingsState
-import com.eclipse.music.kit.navigation.Routes
 import com.eclipse.music.kit.utils.data.SettingsState
 import com.eclipse.music.kit.utils.storage.StorageActions
 
@@ -64,10 +63,8 @@ fun SettingsPage(navController: NavHostController) {
                 navigationIcon = {
                     IconButton(onClick = {
                         haptic(HapticLevel.LIGHT)
-                        navController.navigate(Routes.HOME) {
-                            popUpTo(Routes.SETTINGS) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
+                        if (navController.previousBackStackEntry != null) {
+                            navController.popBackStack()
                         }
                     }) {
                         Icon(Icons.Outlined.ArrowBackIosNew, null)

@@ -38,6 +38,7 @@ object NcmCache {
                     JSONObject().apply {
                         put("uri", it.uriKey)
                         put("name", it.displayName)
+                        put("ext", it.extension)
                     }
                 )
             }
@@ -66,7 +67,8 @@ object NcmCache {
 
                 NcmUiFile(
                     file = file,
-                    displayName = obj.getString("name")
+                    displayName = obj.getString("name"),
+                    extension = obj.optString("ext", "NCM")
                 )
             }
         }

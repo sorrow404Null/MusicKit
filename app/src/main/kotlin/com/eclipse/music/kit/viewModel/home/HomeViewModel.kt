@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eclipse.music.kit.utils.MiscUtils.extensionOrUnknown
 import com.eclipse.music.kit.utils.MiscUtils.safeDisplayName
 import com.eclipse.music.kit.utils.ncm.NcmCache
 import com.eclipse.music.kit.utils.ncm.NcmCoverLoader
@@ -67,7 +68,8 @@ class HomeViewModel(
                 .map {
                     NcmUiFile(
                         file = it,
-                        displayName = it.safeDisplayName()
+                        displayName = it.safeDisplayName(),
+                        extension = it.extensionOrUnknown()
                     )
                 }
                 .sortedWith { a, b ->

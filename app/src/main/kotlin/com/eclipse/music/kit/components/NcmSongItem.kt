@@ -26,28 +26,21 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.documentfile.provider.DocumentFile
 import com.eclipse.music.kit.R
-import com.eclipse.music.kit.utils.MiscUtils.extensionOrUnknown
-import com.eclipse.music.kit.utils.MiscUtils.safeDisplayName
 
 @Composable
 fun NcmSongItem(
-    file: DocumentFile,
+    displayName: String,
+    extension: String,
     cover: Bitmap?,
     isCurrent: Boolean,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
     val background = when {
-        isCurrent ->
-            MaterialTheme.colorScheme.primaryContainer
-
-        isSelected ->
-            MaterialTheme.colorScheme.secondaryContainer
-
-        else ->
-            MaterialTheme.colorScheme.surface
+        isCurrent -> MaterialTheme.colorScheme.primaryContainer
+        isSelected -> MaterialTheme.colorScheme.secondaryContainer
+        else -> MaterialTheme.colorScheme.surface
     }
 
     Row(
@@ -58,8 +51,6 @@ fun NcmSongItem(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
-
         if (cover != null) {
             Image(
                 bitmap = cover.asImageBitmap(),
@@ -81,11 +72,11 @@ fun NcmSongItem(
 
         Column {
             Text(
-                text = file.safeDisplayName(),
+                text = displayName,
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                text = "${file.extensionOrUnknown()} ${stringResource(R.string.text_extension_format)}",
+                text = "$extension ${stringResource(R.string.text_extension_format)}",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -103,4 +94,3 @@ fun NcmSongItem(
         }
     }
 }
-
