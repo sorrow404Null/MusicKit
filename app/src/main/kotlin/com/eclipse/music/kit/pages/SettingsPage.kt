@@ -1,7 +1,7 @@
 package com.eclipse.music.kit.pages
 
-import android.annotation.RequiresApi
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope

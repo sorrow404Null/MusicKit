@@ -1,9 +1,9 @@
 package com.eclipse.music.kit.pages
 
-import android.annotation.RequiresApi
 import android.app.Application
 import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,6 +57,7 @@ import com.eclipse.music.kit.viewModel.home.HomeViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.R)
+@Suppress("AssignedValueIsNeverRead")
 @Composable
 fun HomePage(
     navController: NavHostController,
