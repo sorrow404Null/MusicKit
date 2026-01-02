@@ -4,6 +4,18 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+
+val gitDescribe = providers.exec {
+    commandLine("git", "describe", "--tags", "--always")
+    isIgnoreExitValue = true
+}.standardOutput.asText.map { it.trim() }.orElse("1.0")
+
+val gitCommitCount = providers.exec {
+    commandLine("git", "rev-list", "--count", "HEAD")
+    isIgnoreExitValue = true
+}.standardOutput.asText.map { it.trim().toInt() }.orElse(1)
+
+
 android {
     namespace = "com.eclipse.music.kit"
     compileSdk {
@@ -15,7 +27,8 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionCode = 1 + gitCommitCount.get()
+        versionName = "1.0" + gitDescribe.get()
     }
 
     buildTypes {
@@ -45,6 +58,10 @@ android {
                 "META-INF/*.kotlin_module"
             )
         }
+    }
+
+    androidResources {
+        additionalParameters += arrayOf("--allow-reserved-package-id", "--package-id", "0x64")
     }
 
     kotlin {
