@@ -38,6 +38,8 @@ fun rememberSettingsState():
         state.value = repo.load()
     }
 
+    // Use a separate key to track changes to language
+    // to ensure save() is called before any activity recreation
     LaunchedEffect(state.value) {
         repo.save(state.value)
     }

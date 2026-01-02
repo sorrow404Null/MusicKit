@@ -3,6 +3,6 @@
 ## TODO
 
 - [ ] NCM conversion
-- [ ] Language selection
+- [x] ~~Language selection~~
 - [ ] Write lyrics
 - [ ] View converted files

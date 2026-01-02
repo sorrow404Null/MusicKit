@@ -13,4 +13,5 @@ object SettingsKeys {
     val DELETE_SOURCE = booleanPreferencesKey("delete_source")
     val LYRIC_SOURCE_INDEX = intPreferencesKey("lyric_source_index")
     val HAPTIC_ENABLED = booleanPreferencesKey("haptic_enabled")
+    val LANGUAGE = stringPreferencesKey("language")
 }
