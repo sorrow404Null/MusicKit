@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 
@@ -94,4 +95,6 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.sceneform.rendering)
     implementation(libs.accompanist.navigation.animation)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kyant0.taglib)
 }

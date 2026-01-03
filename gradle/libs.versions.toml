@@ -1,6 +1,6 @@
 [versions]
 agp = "8.13.2"
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 composeBom = "2025.12.01"
 activityCompose = "1.12.2"
 lifecycleRuntimeKtx = "2.10.0"
@@ -11,6 +11,8 @@ coilCompose = "2.7.0"
 documentfile = "1.1.0"
 accompanistNavigationAnimation = "0.36.0"
 rendering = "1.17.1"
+kotlinxSerializationJson = "1.9.0"
+taglibVersion = "1.0.5"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
@@ -28,8 +30,11 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "documentfile" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 sceneform-rendering = { module = "com.google.ar.sceneform:rendering", version.ref = "rendering" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kyant0-taglib = { group = "io.github.kyant0", name = "taglib", version.ref = "taglibVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
