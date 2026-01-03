@@ -72,4 +72,9 @@
         <item>简体中文</item>
     </string-array>
 
+    <string name="text_convert_done">转换完成</string>
+    <string name="text_all_files_converted">所有选中的文件已转换完成。</string>
+
+    <string name="text_permission_denied_toast">权限被拒绝，将无法正常写入歌词和封面信息。</string>
+
 </resources>

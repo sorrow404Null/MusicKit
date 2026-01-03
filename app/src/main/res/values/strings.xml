@@ -63,4 +63,9 @@
     <string name="text_language">Language</string>
     <string name="text_choose_language">Choose language</string>
 
+    <string name="text_convert_done">Conversion Done</string>
+    <string name="text_all_files_converted">All selected files have been converted.</string>
+
+    <string name="text_permission_denied_toast">Permission denied. Lyrics and covers cannot be written properly.</string>
+
 </resources>
