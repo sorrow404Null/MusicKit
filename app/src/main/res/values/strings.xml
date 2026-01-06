@@ -68,4 +68,5 @@
 
     <string name="text_permission_denied_toast">Permission denied. Lyrics and covers cannot be written properly.</string>
 
+    <string name="text_no_network_warning">No network connection. Lyrics may not be retrieved properly.</string>
 </resources>

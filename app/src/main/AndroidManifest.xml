@@ -7,7 +7,7 @@
 
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+        tools:ignore="AllFilesAccessPolicy,ScopedStorage" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -22,7 +22,8 @@
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="false"
-        android:theme="@style/Theme.MusicKit">
+        android:theme="@style/Theme.MusicKit"
+        tools:targetApi="33">
         <activity
             android:name=".MainActivity"
             android:exported="true"
