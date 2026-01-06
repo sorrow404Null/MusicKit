@@ -17,8 +17,6 @@ import com.eclipse.music.kit.utils.data.SettingsRepository
 import com.eclipse.music.kit.utils.data.SettingsState
 import com.eclipse.music.kit.utils.storage.StorageActions
 import com.eclipse.music.kit.utils.storage.StorageController
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 
 @RequiresApi(Build.VERSION_CODES.R)
@@ -38,8 +36,6 @@ fun rememberSettingsState():
         state.value = repo.load()
     }
 
-    // Use a separate key to track changes to language
-    // to ensure save() is called before any activity recreation
     LaunchedEffect(state.value) {
         repo.save(state.value)
     }
@@ -66,14 +62,6 @@ fun rememberSettingsState():
                     )
                 }
         }
-
-    LaunchedEffect(state.value.inputDir) {
-        if (state.value.inputDir.isNotEmpty()) {
-            ncmFiles = withContext(Dispatchers.IO) {
-                controller.scanNcm(state.value.inputDir)
-            }
-        }
-    }
 
     val actions = remember {
         StorageActions(
