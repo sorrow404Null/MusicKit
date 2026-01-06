@@ -12,11 +12,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.Language
-import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.Vibration
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +40,6 @@ import androidx.navigation.NavHostController
 import com.eclipse.music.kit.R
 import com.eclipse.music.kit.components.HapticLevel
 import com.eclipse.music.kit.components.LanguageSheet
-import com.eclipse.music.kit.components.LyricSourceSheet
 import com.eclipse.music.kit.components.NavigationItem
 import com.eclipse.music.kit.components.SwitchItem
 import com.eclipse.music.kit.components.ValueItem
@@ -59,7 +56,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingsPage(navController: NavHostController) {
 
-    var showLyricSheet by remember { mutableStateOf(false) }
+//    var showLyricSheet by remember { mutableStateOf(false) }
     var showLanguageSheet by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -139,31 +136,32 @@ fun SettingsPage(navController: NavHostController) {
                 actions = storageActions,
                 onHaptic = { haptic(HapticLevel.LIGHT) }
             )
+// TODO: add choosing lyrics source.
 
-            SettingSection(title = stringResource(R.string.text_section_lyrics)) {
-                val lyricTitles = stringArrayResource(R.array.lyric_source_titles)
-                ValueItem(
-                    icon = Icons.Outlined.LibraryMusic,
-                    title = stringResource(R.string.text_lyric_source),
-                    value = lyricTitles[state.lyricSourceIndex],
-                    onClick = {
-                        haptic(HapticLevel.LIGHT)
-                        showLyricSheet = true
-                    }
-                )
-
-                if (showLyricSheet) {
-                    LyricSourceSheet(
-                        currentIndex = state.lyricSourceIndex,
-                        onSelect = {
-                            haptic(HapticLevel.LIGHT)
-                            settingsState.value = state.copy(lyricSourceIndex = it)
-                            showLyricSheet = false
-                        },
-                        onDismiss = { showLyricSheet = false }
-                    )
-                }
-            }
+//            SettingSection(title = stringResource(R.string.text_section_lyrics)) {
+//                val lyricTitles = stringArrayResource(R.array.lyric_source_titles)
+//                ValueItem(
+//                    icon = Icons.Outlined.LibraryMusic,
+//                    title = stringResource(R.string.text_lyric_source),
+//                    value = lyricTitles[state.lyricSourceIndex],
+//                    onClick = {
+//                        haptic(HapticLevel.LIGHT)
+//                        showLyricSheet = true
+//                    }
+//                )
+//
+//                if (showLyricSheet) {
+//                    LyricSourceSheet(
+//                        currentIndex = state.lyricSourceIndex,
+//                        onSelect = {
+//                            haptic(HapticLevel.LIGHT)
+//                            settingsState.value = state.copy(lyricSourceIndex = it)
+//                            showLyricSheet = false
+//                        },
+//                        onDismiss = { showLyricSheet = false }
+//                    )
+//                }
+//            }
 
             SettingSection(title = stringResource(R.string.text_section_advanced)) {
                 SwitchItem(
@@ -176,18 +174,19 @@ fun SettingsPage(navController: NavHostController) {
                         settingsState.value = state.copy(hapticFeedbackEnabled = it)
                     }
                 )
+// TODO: add Delete function for deleting original files.
 
-                SwitchItem(
-                    icon = Icons.Outlined.Delete,
-                    title = stringResource(R.string.text_delete_source),
-                    subtitle = stringResource(R.string.text_delete_source_desc),
-                    checked = state.deleteSource,
-                    isDanger = true,
-                    onCheckedChange = {
-                        haptic(HapticLevel.LIGHT)
-                        settingsState.value = state.copy(deleteSource = it)
-                    }
-                )
+//                SwitchItem(
+//                    icon = Icons.Outlined.Delete,
+//                    title = stringResource(R.string.text_delete_source),
+//                    subtitle = stringResource(R.string.text_delete_source_desc),
+//                    checked = state.deleteSource,
+//                    isDanger = true,
+//                    onCheckedChange = {
+//                        haptic(HapticLevel.LIGHT)
+//                        settingsState.value = state.copy(deleteSource = it)
+//                    }
+//                )
             }
         }
     }
